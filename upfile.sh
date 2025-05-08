@@ -35,7 +35,7 @@ DELETE_URL=$(echo "$RESPONSE" | grep -i '^X-Delete-Url:' | awk '{print $2}' | tr
 
 echo "Uploaded URL: $PASTE_URL"
 echo "Delete command:"
-echo "curl -X DELETE $DELETE_URL"
+echo "curl -X DELETE $PASTE_URL"
 
 CLEAN_TEXT=$(curl -s "$PASTE_URL")
 
