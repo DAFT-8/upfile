@@ -1,0 +1,40 @@
+#!/bin/bash
+command -v magick > /dev/null 2>&1 || { echo >&2 "I require imagemagick but it's not installed. Install it. Aborting."; exit 1; }
+command -v xclip > /dev/null 2>&1 || { echo >&2 "I require xclip but it's not installed. Install it. Aborting."; exit 1; }
+if [ -z "$1" ]; then
+  	echo "Usage: $0 <file>"
+  	exit 1
+fi
+FILE="$1"
+if [ ! -f "$FILE" ]; then
+  	echo "File not found: $FILE"
+  	exit 1
+fi
+EXT=$(echo "${FILE##*.}" | tr '[:upper:]' '[:lower:]')
+WIDTH=$(magick identify -format "%w" "$FILE")
+if [[ "$EXT" == "png" || "$EXT" == "jpg" || "$EXT" == "jpeg" || "$EXT" == "gif" ]]; then
+	if [[ "$EXT" == "png" ]]; then
+		MIME="image/png"
+		if [[ $(stat -c%s "$FILE") -gt 716800 || "$WIDTH" -ge 1920 ]]; then
+		magick $FILE -resize 1600x900 -define png:compression-level=9 ~/reduced.png
+		FILE=~/reduced.png
+		fi
+	elif [[ "$EXT" == "gif" ]]; then
+		MIME="image/gif"
+	else
+		MIME="image/jpg"
+		if [[ $(stat -c%s "$FILE") -gt 716800 || "$WIDTH" -ge 1920 ]]; then
+		magick $FILE -resize 1600x900 -quality 85 ~/reduced.jpg
+		FILE=~/reduced.jpg
+		fi
+	fi
+DATA_URI="data:$MIME;base64,$(base64 -w 0 "$FILE")"
+RESPONSE=$(printf '%s' "$DATA_URI" | curl -s -D - --data-binary @- https://paste.rs)
+else
+	RESPONSE=$(curl -s -D - --data-binary "@$FILE" https://paste.rs)
+fi
+PASTE_URL=$(echo "$RESPONSE" | tail -n 1)
+echo "Uploaded URL: $PASTE_URL"
+echo "Delete command: curl -X DELETE $PASTE_URL"
+printf '%s' "$PASTE_URL" | xclip -selection clipboard
+echo "Copied URL to clipboard."
