@@ -15,9 +15,9 @@ if [ ! -f "$FILE" ]; then
 fi
 
 EXT=$(echo "${FILE##*.}" | tr '[:upper:]' '[:lower:]')
-WIDTH=$(magick identify -format "%w" "$FILE")
 
 if [[ "$EXT" == "png" || "$EXT" == "jpg" || "$EXT" == "jpeg" || "$EXT" == "gif" ]]; then
+	WIDTH=$(magick identify -format "%w" "$FILE")
 	if [[ "$EXT" == "png" ]]; then
 		MIME="image/png"
 		if [[ $(stat -c%s "$FILE") -gt 716800 || "$WIDTH" -ge 1920 ]]; then
