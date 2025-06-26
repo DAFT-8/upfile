@@ -37,7 +37,7 @@ if [[ "$EXT" == "png" || "$EXT" == "jpg" || "$EXT" == "jpeg" || "$EXT" == "gif" 
 	fi
 
 	DATA_URI="data:$MIME;base64,$(base64 -w 0 "$FILE")"
-	RESPONSE=$(printf '%s' "$DATA_URI" | curl -s -D - --data-binary @- https://paste.rs)
+	RESPONSE=$(echo -ne "$DATA_URI" | curl -s -D - --data-binary @- https://paste.rs)
 else
 	RESPONSE=$(curl -s -D - --data-binary "@$FILE" https://paste.rs)
 fi
