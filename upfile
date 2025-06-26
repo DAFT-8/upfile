@@ -15,7 +15,7 @@ if [ ! -f "$FILE" ]; then
   	exit 1
 fi
 
-EXT=$(echo "${FILE##*.}" | tr '[:upper:]' '[:lower:]')
+EXT=$(echo -e "${FILE##*.}" | tr '[:upper:]' '[:lower:]')
 
 if [[ "$EXT" == "png" || "$EXT" == "jpg" || "$EXT" == "jpeg" || "$EXT" == "gif" ]]; then
 	WIDTH=$(magick identify -format "%w" "$FILE")
@@ -42,9 +42,9 @@ else
 	RESPONSE=$(curl -s -D - --data-binary "@$FILE" https://paste.rs)
 fi
 
-PASTE_URL=$(echo "$RESPONSE" | tail -n 1)
+PASTE_URL=$(echo -e "$RESPONSE" | tail -n 1)
 
 echo -e "Uploaded URL: $PASTE_URL"
 echo -e "Delete command: curl -X DELETE $PASTE_URL"
 echo -ne "$PASTE_URL" | xclip -selection clipboard
-echo -e "Copied URL to clipboard."
+echo "Copied URL to clipboard."
