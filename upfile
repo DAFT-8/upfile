@@ -35,6 +35,8 @@ if [[ "$EXT" =~ ^(png|jpg|jpeg|gif)$ ]]; then
             ;;
         gif)
             MIME="image/gif"
+            magick "${FILE}" -layers Optimize -quality 75 /tmp/reduced.gif
+            FILE=/tmp/reduced.gif
             ;;
         jpg|jpeg)
             MIME="image/jpeg"
