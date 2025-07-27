@@ -29,7 +29,7 @@ if [[ "$EXT" =~ ^(png|jpg|jpeg|gif)$ ]]; then
         png)
             MIME="image/png"
             if [[ "$FILESIZE" -gt 716800 || "$WIDTH" -ge 1920 ]]; then
-                magick "${FILE}" -resize 1600x900 -define png:compression-level=9 /tmp/reduced.png
+                magick "${FILE}" -resize 1280x720 -define png:compression-level=9 /tmp/reduced.png
                 FILE=/tmp/reduced.png
             fi
             ;;
@@ -39,7 +39,7 @@ if [[ "$EXT" =~ ^(png|jpg|jpeg|gif)$ ]]; then
         jpg|jpeg)
             MIME="image/jpeg"
             if [[ "$FILESIZE" -gt 716800 || "$WIDTH" -ge 1920 ]]; then
-                magick "${FILE}" -resize 1600x900 -quality 85 /tmp/reduced.jpg
+                magick "${FILE}" -resize 1280x720 -quality 75 /tmp/reduced.jpg
                 FILE=/tmp/reduced.jpg
             fi
             ;;
